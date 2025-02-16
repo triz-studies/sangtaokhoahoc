@@ -21,7 +21,7 @@
 title: Sáng tạo Khoa học
 email: sangtaokhoahoc.com@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
-  Tổng hợp thông tin về các sáng tạo trong khoa học - kỹ thuật - công nghệ trên thế giới.
+  Tổng hợp thông tin về các sáng tạo trong khoa học - kỹ thuật - công nghệ trên thế giới
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "http://sangtaokhoahoc.com" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: trizstudies
