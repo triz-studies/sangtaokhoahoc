@@ -27,6 +27,8 @@ url: "http://sangtaokhoahoc.com" # the base hostname & protocol for your site, e
 twitter_username: trizstudies
 github_username:  triz-studies
 
+image_path: http://img.sangtaokhoahoc.com
+
 # Build settings
 theme: minima
 plugins:
