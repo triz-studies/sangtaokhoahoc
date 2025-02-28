@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TRIZ Principle of Division - Fireproof Fuel Tank Demo</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #333;
+            color: white;
+            text-align: center;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        h1 {
+            margin-bottom: 30px;
+            font-size: clamp(1.5rem, 5vw, 2.5rem);
+        }
+        .tanks-container {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            max-width: 1000px;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+        .tank-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .tank {
+            position: relative;
+            width: 200px;
+            height: 300px;
+            margin: 0 20px;
+        }
+        .tank-outline {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 3px solid #aaa;
+            border-radius: 20px;
+            opacity: 0.7;
+            background-color: transparent;
+        }
+        .tank-label {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: clamp(1rem, 3vw, 1.2rem);
+        }
+        .liquid {
+            position: absolute;
+            bottom: 0;
+            left: 5%;
+            width: 90%;
+            height: 90%;
+            background-color: #0c0;
+            border-radius: 18px;
+            transition: background-color 3s;
+        }
+        .cells-container {
+            position: absolute;
+            top: 5%;
+            left: 5%;
+            width: 90%;
+            height: 90%;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(6, 1fr);
+            gap: 5px;
+        }
+        .cell {
+            background-color: #0c0;
+            border-radius: 5px;
+            transition: background-color 0.5s;
+        }
+        .fire {
+            background-color: #f30;
+        }
+        .btn-container {
+            margin-top: 40px;
+        }
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: background-color 0.3s;
+            touch-action: manipulation;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button:active {
+            transform: translateY(2px);
+        }
+        #start-btn {
+            background: linear-gradient(to bottom, #ff6600, #ff3300);
+            color: white;
+            text-shadow: 0 1px 1px rgba(0,0,0,0.5);
+            box-shadow: 0 3px 5px rgba(0,0,0,0.3);
+        }
+        #start-btn:hover {
+            background: linear-gradient(to bottom, #ff7722, #ff4400);
+        }
+        #start-btn:disabled {
+            background: #cccccc;
+            text-shadow: none;
+            box-shadow: none;
+        }
+        #reset-btn {
+            background-color: #4CAF50;
+        }
+        .description {
+            max-width: 600px;
+            margin: 30px auto;
+            line-height: 1.6;
+            font-size: clamp(0.9rem, 2vw, 1rem);
+            padding: 0 20px;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .tanks-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            .tank {
+                margin: 0;
+                width: 180px;
+                height: 270px;
+            }
+            .btn-container {
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+                width: 100%;
+                max-width: 250px;
+            }
+            button {
+                margin: 0;
+                width: 100%;
+                padding: 15px 20px;
+                font-size: 18px;
+            }
+        }
+        
+        /* Accessibility & UX Improvements */
+        button:focus {
+            outline: 3px solid #fff;
+            outline-offset: 2px;
+        }
+        
+        .instructions {
+            margin-bottom: 20px;
+            font-style: italic;
+            color: #ddd;
+            max-width: 600px;
+            font-size: 0.9rem;
+        }
+        
+        /* Add status indicator */
+        .status {
+            margin-top: 15px;
+            padding: 8px 15px;
+            border-radius: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            display: inline-block;
+            transition: all 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>TRIZ Principle 1: Division</h1>
+        
+        <div class="tanks-container">
+            <div class="tank-wrapper">
+                <div class="tank-label">Undivided Tank</div>
+                <div class="tank">
+                    <div class="tank-outline"></div>
+                    <div class="liquid" id="undivided-liquid"></div>
+                </div>
+            </div>
+            
+            <div class="tank-wrapper">
+                <div class="tank-label">Divided Tank</div>
+                <div class="tank">
+                    <div class="tank-outline"></div>
+                    <div class="cells-container" id="cells-container"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            Click "Start Fire" to simulate a fire in both tanks and observe how division prevents fire spreading
+        </div>
+        
+        <div class="btn-container">
+            <button id="start-btn" aria-label="Start fire simulation">Start Fire</button>
+            <button id="reset-btn" aria-label="Reset simulation">Reset</button>
+        </div>
+        
+        <div class="status" id="status">Ready to start simulation</div>
+        
+        <div class="description">
+            <p>This demonstration shows how the TRIZ Principle of Division creates new properties by dividing objects into independent parts. In a real-world application like the British "Expendid" fireproof fuel tank, dividing the tank into honeycomb cells prevents fire from spreading, introducing fire resistance.</p>
+        </div>
+    </div>
+
+    <script>
+        // Create cells in the divided tank
+        const cellsContainer = document.getElementById('cells-container');
+        const cells = [];
+        
+        for (let i = 0; i < 24; i++) {
+            const cell = document.createElement('div');
+            cell.className = 'cell';
+            cellsContainer.appendChild(cell);
+            cells.push(cell);
+        }
+        
+        // Get elements
+        const undividedLiquid = document.getElementById('undivided-liquid');
+        const startBtn = document.getElementById('start-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const statusEl = document.getElementById('status');
+        
+        // State tracking
+        let fireStarted = false;
+        
+        // Functions
+        function startFire() {
+            if (fireStarted) return;
+            fireStarted = true;
+            
+            // Target middle cell (approximately in the middle of the grid)
+            const targetCellIndex = 13; // Middle-ish cell
+            cells[targetCellIndex].classList.add('fire');
+            
+            // Start spreading fire in undivided tank
+            undividedLiquid.style.backgroundColor = '#f30';
+            
+            // Update button states
+            startBtn.disabled = true;
+            startBtn.style.background = '#cccccc';
+            startBtn.style.cursor = 'not-allowed';
+            
+            // Update status
+            statusEl.textContent = 'Fire spreading in undivided tank, contained in divided tank';
+            statusEl.style.backgroundColor = 'rgba(255, 100, 0, 0.2)';
+        }
+        
+        function resetDemo() {
+            fireStarted = false;
+            
+            // Reset divided tank
+            cells.forEach(cell => {
+                cell.classList.remove('fire');
+            });
+            
+            // Reset undivided tank
+            undividedLiquid.style.backgroundColor = '#0c0';
+            
+            // Reset button states
+            startBtn.disabled = false;
+            startBtn.style.background = 'linear-gradient(to bottom, #ff6600, #ff3300)';
+            startBtn.style.cursor = 'pointer';
+            
+            // Reset status
+            statusEl.textContent = 'Ready to start simulation';
+            statusEl.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+        }
+        
+        // Event listeners
+        startBtn.addEventListener('click', startFire);
+        resetBtn.addEventListener('click', resetDemo);
+        
+        // Touch event handling for mobile
+        startBtn.addEventListener('touchstart', function(e) {
+            if (!fireStarted) {
+                e.preventDefault(); // Prevent double-fire on mobile
+            }
+        });
+        
+        resetBtn.addEventListener('touchstart', function(e) {
+            e.preventDefault(); // Prevent double-fire on mobile
+        });
+    </script>
+</body>
+</html>
